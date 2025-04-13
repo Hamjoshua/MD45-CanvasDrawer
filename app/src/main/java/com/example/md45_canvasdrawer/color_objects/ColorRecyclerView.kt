@@ -1,5 +1,10 @@
 package com.example.md45_canvasdrawer.color_objects
 
+import android.content.res.ColorStateList
+import android.graphics.BlendMode
+import android.graphics.BlendModeColorFilter
+import android.graphics.PorterDuff
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -25,7 +30,11 @@ class ColorListAdapter(val colorButtonOnclick: IColorButtonOnclick) :
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
         val colorDC = currentList[position]
         holder.colorButton.setText(colorDC.name)
-        holder.colorButton.setBackgroundColor(colorDC.color)
+
+        // Смена цвета кнопки
+        holder.colorButton.backgroundTintList = ColorStateList.valueOf(colorDC.color)
+
+
         holder.colorButton.setOnClickListener{
             colorButtonOnclick.onColorButtonClick(colorDC)
         }

@@ -2,7 +2,7 @@ package com.example.md45_canvasdrawer.color_objects
 
 import android.graphics.Color
 
-val colorList : ArrayList<ColorDataClass> = arrayListOf(
+val colorDataList : ArrayList<ColorDataClass> = arrayListOf(
     ColorDataClass("Красный", Color.RED),
     ColorDataClass("Синий", Color.BLUE),
     ColorDataClass("Зеленый", Color.GREEN),

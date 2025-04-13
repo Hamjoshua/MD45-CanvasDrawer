@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView.Orientation
 import com.example.md45_canvasdrawer.color_objects.ColorDataClass
 import com.example.md45_canvasdrawer.color_objects.ColorListAdapter
 import com.example.md45_canvasdrawer.color_objects.IColorButtonOnclick
-import com.example.md45_canvasdrawer.color_objects.colorList
+import com.example.md45_canvasdrawer.color_objects.colorDataList
 import com.example.md45_canvasdrawer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), IColorButtonOnclick {
@@ -25,24 +25,20 @@ class MainActivity : AppCompatActivity(), IColorButtonOnclick {
     }
 
     fun initColorList(){
-        val listAdapter = ColorListAdapter(this)
-        listAdapter.apply {
-            currentList = colorList
-        }
+        var listAdapter = ColorListAdapter(this)
+        listAdapter.submitList(colorDataList)
 
-        val horizLayoutManager = LinearLayoutManager(this)
-        layoutManager.apply {
-            orientation = RecyclerView.HORIZONTAL
-        }
+        var horizontalLayoutManager = LinearLayoutManager(this)
+        horizontalLayoutManager.orientation = RecyclerView.HORIZONTAL
 
         binding.colorList.apply {
             adapter = listAdapter
-            layoutManager = horizLayoutManager
+            layoutManager = horizontalLayoutManager
         }
     }
 
     override fun onColorButtonClick(colorDC: ColorDataClass) {
         Toast.makeText(this, "Выбран ${colorDC.name} цвет", Toast.LENGTH_SHORT).show()
-        // TODO смена текса
+        binding.drawer.paintColor = colorDC.color
     }
 }

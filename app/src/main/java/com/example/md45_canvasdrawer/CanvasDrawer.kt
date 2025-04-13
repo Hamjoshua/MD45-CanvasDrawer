@@ -13,9 +13,17 @@ import androidx.annotation.Dimension
 
 class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     @ColorInt
-    private var paintColor = Color.BLACK
+    var paintColor = Color.BLACK
+        set(value){
+            field = value
+            paint.color = value
+        }
     @Dimension
-    private var paintSize = 20f
+    var paintSize = 20f
+        set(value){
+            field = value
+            paint.strokeWidth = value
+    }
 
     private var fingerX : Float = 0f
     private var fingerY : Float = 0f
