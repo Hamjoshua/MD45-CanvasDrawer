@@ -13,7 +13,7 @@ import com.example.md45_canvasdrawer.R
 class ColorViewHolder(view: View) : ViewHolder(view) {
     val colorButton = view.findViewById<Button>(R.id.colorBtn)
 }
-class ColorRecyclerView(val colorButtonOnclick: IColorButtonOnclick) :
+class ColorListAdapter(val colorButtonOnclick: IColorButtonOnclick) :
     ListAdapter<ColorDataClass, ColorViewHolder>(ColorDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ColorViewHolder {
