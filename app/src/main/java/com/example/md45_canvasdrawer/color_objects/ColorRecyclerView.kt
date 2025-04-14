@@ -29,11 +29,9 @@ class ColorListAdapter(val colorButtonOnclick: IColorButtonOnclick) :
 
     override fun onBindViewHolder(holder: ColorViewHolder, position: Int) {
         val colorDC = currentList[position]
-        holder.colorButton.setText(colorDC.name)
 
         // Смена цвета кнопки
         holder.colorButton.backgroundTintList = ColorStateList.valueOf(colorDC.color)
-
 
         holder.colorButton.setOnClickListener{
             colorButtonOnclick.onColorButtonClick(colorDC)

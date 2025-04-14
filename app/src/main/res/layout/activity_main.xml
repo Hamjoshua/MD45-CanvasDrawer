@@ -17,6 +17,24 @@
 
     </com.example.md45_canvasdrawer.CanvasDrawerView>
 
+    <TextView
+        android:id="@+id/sizeBarText"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/sizeBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+    </TextView>
+
+    <SeekBar
+        android:id="@+id/sizeBar"
+        app:layout_constraintBottom_toTopOf="@id/colorList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+    </SeekBar>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/colorList"
         android:layout_width="match_parent"
