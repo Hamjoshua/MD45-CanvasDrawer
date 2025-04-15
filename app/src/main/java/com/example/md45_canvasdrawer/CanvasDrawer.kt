@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
 import android.net.Uri
+import android.provider.MediaStore
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -88,12 +89,18 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
         draw(canvas)
 
         val filename = "drawing_${System.currentTimeMillis()}.png"
-        val file = File(context.getExternalFilesDir(null),
+        val file = File(context.getExternalFilesDir("Downloads").toString(),
             filename)
         FileOutputStream(file).use {
             bitmap.compress(Bitmap.CompressFormat.PNG, 100,
                 it)
+            it.flush()
         }
+        MediaStore.Images.Media.insertImage(
+            context.contentResolver,
+            bitmap,
+            file.absolutePath,
+            file.name)
     }
 
     fun clearAllDrawings(){
