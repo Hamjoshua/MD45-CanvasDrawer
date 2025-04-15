@@ -5,6 +5,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
+import android.graphics.Path
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
@@ -13,10 +14,11 @@ import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
 
 
-data class Point(
-    val x: Float,
-    val y: Float
-)
+class DrawingPath {
+    var path = Path()
+    var color: Int = Color.BLACK
+    var size: Float = 10f
+}
 
 class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     @ColorInt
@@ -33,56 +35,43 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
             paint.textSize = value
     }
 
-    private var firstTap : Point? = null
-    private var secondTap : Point? = null
-
     private var paint : Paint = Paint(0).apply {
         color = paintColor
         strokeWidth = paintSize
     }
 
-    fun handleTap(x: Float, y: Float){
-        if(firstTap == null){
-            firstTap = Point(x, y)
-        }
-        else if(secondTap == null){
-            secondTap = Point(x, y)
-        }
-        else{
-            firstTap = secondTap
-            secondTap = Point(x, y)
-        }
-    }
+    private var currentPath: DrawingPath = DrawingPath()
+    private var drawingPaths: MutableList<DrawingPath> = mutableListOf()
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        Log.d("touch", "${event}")
-        if(event != null){
-            handleTap(event.getX(), event.getY())
-
-            Log.d("touch", "${firstTap} ${secondTap}")
+    override fun onTouchEvent(event: MotionEvent): Boolean {
+        when(event.action){
+            MotionEvent.ACTION_DOWN -> {
+                currentPath = DrawingPath().apply {
+                    size = paintSize
+                    color = paintColor
+                }
+                currentPath.path.moveTo(event.x, event.y)
+                drawingPaths.add(currentPath)
+                Log.d("Drawer", "New path: ${currentPath}")
+            }
+            MotionEvent.ACTION_MOVE -> {
+                currentPath.path.lineTo(event.x, event.y)
+                Log.d("Drawer", "Paths: ${drawingPaths}")
+            }
         }
         invalidate()
-        return super.onTouchEvent(event)
+        return true
     }
+
     override fun onDraw(canvas: Canvas){
         super.onDraw(canvas)
 
-        canvas.apply {
-            if(secondTap == null && firstTap == null){
-                return
+        drawingPaths.forEach{
+            paint.apply {
+                paintColor = it.color
+                paintSize = it.size
             }
-            else if(secondTap == null){
-                drawCircle(firstTap!!.x, firstTap!!.y, paintSize, paint)
-                drawLine(firstTap!!.x, firstTap!!.y, firstTap!!.x, firstTap!!.y,
-                    paint)
-            }
-            else{
-                drawCircle(firstTap!!.x, firstTap!!.y, paintSize, paint)
-                drawCircle(secondTap!!.x, secondTap!!.y, paintSize, paint)
-                drawLine(firstTap!!.x, firstTap!!.y, secondTap!!.x, secondTap!!.y,
-                    paint)
-            }
+            canvas.drawPath(it.path, paint)
         }
-
     }
 }
