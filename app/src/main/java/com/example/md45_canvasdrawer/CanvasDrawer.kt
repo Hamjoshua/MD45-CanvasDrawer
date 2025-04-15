@@ -2,16 +2,21 @@ package com.example.md45_canvasdrawer
 
 import android.content.Context
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Path
+import android.net.Uri
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.ColorInt
 import androidx.annotation.Dimension
+import androidx.core.graphics.createBitmap
+import java.io.File
+import java.io.FileOutputStream
 
 
 class DrawingPath {
@@ -74,4 +79,38 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
             canvas.drawPath(it.path, paint)
         }
     }
+
+    fun saveDrawing(){
+        val bitmap = createBitmap(width, height,
+            Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+
+        draw(canvas)
+
+        val filename = "drawing_${System.currentTimeMillis()}.png"
+        val file = File(context.getExternalFilesDir(null),
+            filename)
+        FileOutputStream(file).use {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100,
+                it)
+        }
+    }
+
+    fun clearAllDrawings(){
+        drawingPaths.clear()
+    }
+
+    fun openDrawing(uri: Uri){
+        var bitmap: Bitmap? = null
+        context.contentResolver.openInputStream(uri).use {
+            bitmap = BitmapFactory.decodeStream(it)
+        }
+
+        val canvas = Canvas(bitmap!!)
+        clearAllDrawings()
+        canvas.drawBitmap(bitmap!!, 0f, 0f, null)
+        invalidate()
+    }
+
+
 }

@@ -1,6 +1,9 @@
 package com.example.md45_canvasdrawer
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.provider.MediaStore
 import android.widget.SeekBar
 import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.Toast
@@ -16,6 +19,7 @@ import com.example.md45_canvasdrawer.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity(), IColorButtonOnclick {
     private lateinit var binding: ActivityMainBinding
+    val REQUEST_CODE_PICK_IMAGE: Int = 666
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -36,6 +40,21 @@ class MainActivity : AppCompatActivity(), IColorButtonOnclick {
         binding.colorList.apply {
             adapter = listAdapter
             layoutManager = horizontalLayoutManager
+        }
+    }
+
+    fun openImage(){
+        val intent = Intent(Intent.ACTION_PICK,
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+        startActivityForResult(intent, REQUEST_CODE_PICK_IMAGE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode == REQUEST_CODE_PICK_IMAGE &&
+            resultCode == Activity.RESULT_OK) {
+            val uri = data?.data ?: return
+            binding.drawer.openDrawing(uri)
         }
     }
 
