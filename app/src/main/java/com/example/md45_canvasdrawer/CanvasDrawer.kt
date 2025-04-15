@@ -98,6 +98,7 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
 
     fun clearAllDrawings(){
         drawingPaths.clear()
+        invalidate()
     }
 
     fun openDrawing(uri: Uri){

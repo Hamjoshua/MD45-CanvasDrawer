@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), IColorButtonOnclick {
 
         initColorList()
         initSizeBar()
+        initTools()
     }
 
     fun initColorList(){
@@ -55,6 +56,20 @@ class MainActivity : AppCompatActivity(), IColorButtonOnclick {
             resultCode == Activity.RESULT_OK) {
             val uri = data?.data ?: return
             binding.drawer.openDrawing(uri)
+        }
+    }
+
+    fun initTools(){
+        binding.cleanButton.setOnClickListener{
+            binding.drawer.clearAllDrawings()
+        }
+
+        binding.downloadButton.setOnClickListener{
+            binding.drawer.saveDrawing()
+        }
+
+        binding.uploadButton.setOnClickListener {
+            openImage()
         }
     }
 
