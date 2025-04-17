@@ -45,7 +45,7 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
         color = paintColor
         strokeWidth = paintSize
     }
-
+    private var backBitmap: Bitmap? = null
     private var currentPath: DrawingPath = DrawingPath()
     private var drawingPaths: MutableList<DrawingPath> = mutableListOf()
 
@@ -58,11 +58,9 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
                 }
                 currentPath.path.moveTo(event.x, event.y)
                 drawingPaths.add(currentPath)
-                Log.d("Drawer", "New path: ${currentPath}")
             }
             MotionEvent.ACTION_MOVE -> {
                 currentPath.path.lineTo(event.x, event.y)
-                Log.d("Drawer", "Paths: ${drawingPaths}")
             }
         }
         invalidate()
@@ -71,6 +69,10 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
 
     override fun onDraw(canvas: Canvas){
         super.onDraw(canvas)
+
+        backBitmap?.let {
+            canvas.drawBitmap(it, 0f, 0f, null)
+        }
 
         drawingPaths.forEach{
             paint.apply {
@@ -109,16 +111,18 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
     }
 
     fun openDrawing(uri: Uri){
-        var bitmap: Bitmap? = null
-        context.contentResolver.openInputStream(uri).use {
-            bitmap = BitmapFactory.decodeStream(it)
+        try {
+            var bitmap: Bitmap? = null
+            context.contentResolver.openInputStream(uri).use {
+                bitmap = BitmapFactory.decodeStream(it)
+            }
+
+            clearAllDrawings()
+            backBitmap = bitmap
+            invalidate()
+        } catch (e: Exception) {
+            e.printStackTrace()
+            Log.d("Drawer", e.toString())
         }
-
-        val canvas = Canvas(bitmap!!)
-        clearAllDrawings()
-        canvas.drawBitmap(bitmap!!, 0f, 0f, null)
-        invalidate()
     }
-
-
 }
