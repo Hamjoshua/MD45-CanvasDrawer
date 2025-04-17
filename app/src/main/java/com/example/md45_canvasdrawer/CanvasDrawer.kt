@@ -83,46 +83,25 @@ class CanvasDrawerView(context: Context, attrs: AttributeSet) : View(context, at
         }
     }
 
-    fun saveDrawing(){
+    fun getBitmap() : Bitmap {
         val bitmap = createBitmap(width, height,
             Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
         draw(canvas)
 
-        val filename = "drawing_${System.currentTimeMillis()}.png"
-        val file = File(context.getExternalFilesDir("Downloads").toString(),
-            filename)
-        FileOutputStream(file).use {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100,
-                it)
-            it.flush()
-        }
-        MediaStore.Images.Media.insertImage(
-            context.contentResolver,
-            bitmap,
-            file.absolutePath,
-            file.name)
+        return bitmap
+    }
+
+
+    fun setBitmap(bitmap: Bitmap){
+        clearAllDrawings()
+        backBitmap = bitmap
+        invalidate()
     }
 
     fun clearAllDrawings(){
         drawingPaths.clear()
         invalidate()
-    }
-
-    fun openDrawing(uri: Uri){
-        try {
-            var bitmap: Bitmap? = null
-            context.contentResolver.openInputStream(uri).use {
-                bitmap = BitmapFactory.decodeStream(it)
-            }
-
-            clearAllDrawings()
-            backBitmap = bitmap
-            invalidate()
-        } catch (e: Exception) {
-            e.printStackTrace()
-            Log.d("Drawer", e.toString())
-        }
     }
 }
